@@ -6,5 +6,5 @@ echo "$message" >> triggerfile
 
 git add .
 git commit -am "Triggered pipeline for testing"
-git push
+git push -set--upstream origin main
 
