@@ -4,37 +4,24 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // This happens automatically with SCM polling
-                echo 'Code checked out from GitHub'
+                echo 'Git project should be cloned automatically because we are running a multi-branch pipeline'            
+                sh 'pwd && ls -lah'
             }
         }
-        
-        stage('Build') {
+
+        stage('Build and install required dependencies') {
             steps {
-                echo 'Building application...'
-                // Add your build commands here
-                // sh 'npm install' (for Node.js)
-                // sh 'mvn clean compile' (for Java)
-                // sh 'docker build -t myapp .' (for Docker)
+                echo 'Building the project and installing dependencies...'
+                sh 'npm i'
             }
         }
-        
-        stage('Test') {
+
+        stage('Start server and perform health check') {
             steps {
-                echo 'Running tests...'
-                // Add your test commands here
-                // sh 'npm test'
-                // sh 'mvn test'
-                // sh 'pytest'
-            }
-        }
-        
-        stage('Deploy') {
-            steps {
-                echo 'Deploying application...'
-                // Add deployment commands here
-                // sh 'docker run -d myapp'
-                // sh 'kubectl apply -f deployment.yaml'
+                echo 'Starting server and performing health check...'
+                sh 'npm start &'
+                sh 'sleep 5' // Wait for server to start
+                sh 'curl -f http://localhost:8082/health || exit 1'
             }
         }
     }
